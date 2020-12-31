@@ -12,10 +12,14 @@ import com.mkdev.trivai.controller.AppController;
 import com.mkdev.trivai.model.Question;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingDeque;
 
 import static com.mkdev.trivai.controller.AppController.TAG;
 
@@ -24,11 +28,21 @@ public class QuestionBank {
     private String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
 
     public List<Question> getQuestions() {
-
+        Log.d(TAG, "getQuestions: Inside");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://opentdb.com/api.php?amount=20&difficulty=easy&type=boolean", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("JsonStuff", "onResponse: " + response);
+//                Log.d("JsonStuff", "onResponse: " + response);
+                try {
+//                    Log.d("JsonStuff", " and " + response.getJSONArray("results"));
+
+                    for (int i = 0; i < response.getJSONArray("results").length(); i++) {
+
+                        Log.d("JsonStuff", "onResponse: " + response.getJSONArray("results").get(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -40,7 +54,20 @@ public class QuestionBank {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.d("JsonStuff", "onResponse: " + response);
+//                Log.d("JsonStuff", "onResponse: " + response);
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        Question question = new Question();
+                        question.setQuestion(response.getJSONArray(i).get(0).toString());
+                        question.setAnswer(response.getJSONArray(i).getBoolean(1));
+
+                        questionArrayList.add(question);
+
+//                        Log.d("Json", "onResponse: " + response.getJSONArray(i).get(0));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -49,9 +76,9 @@ public class QuestionBank {
             }
         });
 
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
-//        AppController.getInstance().addToRequestQueue(jsonArrayRequest);
+//        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
+        AppController.getInstance().addToRequestQueue(jsonArrayRequest);
 
-        return null;
+        return questionArrayList;
     }
 }
