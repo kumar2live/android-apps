@@ -12,4 +12,6 @@
     <string name="questionTextViewText">This is where questions will be...</string>
     <string name="correct_answer">That is Correct!</string>
     <string name="wrong_answer">That is InCorrect!</string>
+    <string name="your_score">Your current score: 0</string>
+    <string name="highest_score">Highest score: 0</string>
 </resources>
