@@ -3,17 +3,16 @@ package com.mkdev.trivai;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,9 +69,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
+        getNoOfQuestions();
+    }
+
+    public void getNoOfQuestions() {
+        SharedPreferences sharedPreferences = getSharedPreferences("NOOFQUES", MODE_PRIVATE);
+        int noOfQues = sharedPreferences.getInt("noOfQuestions", 10);
+        Log.d("noOfQues", "getNoOfQuestions: " + noOfQues);
+        editTextNumber.setText(String.valueOf(noOfQues));
+    }
+
+    public void saveNoOfQuestions() {
+        int noOfQues = Integer.parseInt(editTextNumber.getText().toString());
+        SharedPreferences sharedPreferences = getSharedPreferences("NOOFQUES", getApplicationContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("noOfQuestions", noOfQues);
+
+        editor.apply();
     }
 
     public void getQuestions() {
+        saveNoOfQuestions();
         currentQuestionIndex = 0;
         textViewQuestionCounter1.setText(0 + " out of " + 0);
 
