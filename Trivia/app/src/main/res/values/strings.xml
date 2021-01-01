@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Trivia</string>
-    <string name="get_data">Get Data</string>
+    <string name="get_data">Get Questions</string>
+    <string name="number_of_questions">Number of Questions</string>
+    <string name="hard_or_easy">Hard or Easy?</string>
+    <string name="trivia">Trivia</string>
+    <string name="trueText">TRUE</string>
+    <string name="falseText">FALSE</string>
+    <string name="prevbutton">prevButton</string>
+    <string name="nextbutton">nextButton</string>
+    <string name="questions_count">0 out of 0</string>
+    <string name="questionTextViewText">This is where questions will be...</string>
+    <string name="correct_answer">That is Correct!</string>
+    <string name="wrong_answer">That is InCorrect!</string>
 </resources>

@@ -3,6 +3,8 @@ package com.mkdev.trivai.data;
 import android.nfc.Tag;
 import android.util.Log;
 
+import androidx.annotation.LongDef;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -27,23 +29,41 @@ public class QuestionBank {
     ArrayList<Question> questionArrayList = new ArrayList<>();
     private String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
 
-    public List<Question> getQuestions() {
-        Log.d(TAG, "getQuestions: Inside");
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://opentdb.com/api.php?amount=20&difficulty=easy&type=boolean", null, new Response.Listener<JSONObject>() {
+    public List<Question> getQuestions(final AnswerListAsyncResponse callBack) {
+//        final String openDBUrl = "https://opentdb.com/api.php?amount=10&difficulty=easy&type=boolean&encode=base64";
+      final String openDBUrl = "https://opentdb.com/api.php?amount=20&difficulty=easy&type=boolean";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, openDBUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 //                Log.d("JsonStuff", "onResponse: " + response);
                 try {
 //                    Log.d("JsonStuff", " and " + response.getJSONArray("results"));
-
                     for (int i = 0; i < response.getJSONArray("results").length(); i++) {
+//                        Log.d("JsonStuff", "onResponse: " + response.getJSONArray("results").get(i));
 
-                        Log.d("JsonStuff", "onResponse: " + response.getJSONArray("results").get(i));
+                        JSONObject jsonObject =  new JSONObject((response.getJSONArray("results").get(i)).toString());
+//                        Log.d("Json", "onResponse: " + jsonObject.getString("question"));
+
+//                        Log.d("TrueOrFalse", "onResponse: " + jsonObject.getString("question"));
+//                        Log.d("TrueOrFalse", "onResponse: " + jsonObject.getString("correct_answer"));
+//                        Log.d("TrueOrFalse", String.valueOf("onResponse: " + jsonObject.getString("correct_answer").equals("True")));
+
+                        Question question = new Question();
+                        question.setQuestion(jsonObject.getString("question"));
+                        question.setAnswer(jsonObject.getString("correct_answer").equals("True"));
+
+
+                        questionArrayList.add(question);
+//                        Log.d("JsonResults", "getQuestions: " + questionArrayList.size());
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if(null != callBack) {
+                    callBack.processFinished(questionArrayList);
+                }
             }
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -63,6 +83,7 @@ public class QuestionBank {
 
                         questionArrayList.add(question);
 
+
 //                        Log.d("Json", "onResponse: " + response.getJSONArray(i).get(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -76,9 +97,9 @@ public class QuestionBank {
             }
         });
 
-//        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
-        AppController.getInstance().addToRequestQueue(jsonArrayRequest);
-
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
+//        AppController.getInstance().addToRequestQueue(jsonArrayRequest);
+//        Log.d("JsonResults", "getQuestions: " + questionArrayList.size());
         return questionArrayList;
     }
 }
