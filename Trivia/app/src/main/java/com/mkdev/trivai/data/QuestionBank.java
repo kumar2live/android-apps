@@ -29,9 +29,9 @@ public class QuestionBank {
     ArrayList<Question> questionArrayList = new ArrayList<>();
     private String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
 
-    public List<Question> getQuestions(final AnswerListAsyncResponse callBack) {
+    public List<Question> getQuestions(int numOfQues, final AnswerListAsyncResponse callBack) {
 //        final String openDBUrl = "https://opentdb.com/api.php?amount=10&difficulty=easy&type=boolean&encode=base64";
-      final String openDBUrl = "https://opentdb.com/api.php?amount=20&difficulty=easy&type=boolean";
+      final String openDBUrl = "https://opentdb.com/api.php?amount="+ numOfQues + "&difficulty=easy&type=boolean";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, openDBUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

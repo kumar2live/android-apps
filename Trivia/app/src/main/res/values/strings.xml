@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Trivia</string>
     <string name="get_data">Get Questions</string>
-    <string name="number_of_questions">Number of Questions</string>
+    <string name="number_of_questions">Number of Questions You want</string>
     <string name="hard_or_easy">Hard or Easy?</string>
     <string name="trivia">Trivia</string>
     <string name="trueText">TRUE</string>

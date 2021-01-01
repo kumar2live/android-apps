@@ -1,11 +1,16 @@
 package com.mkdev.trivai;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -22,6 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button getDataBtn;
+    private TextView editTextNumber;
     private TextView questionViewText;
     private TextView textViewQuestionCounter1;
     private Button buttonTrue;
@@ -36,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        editTextNumber = findViewById(R.id.editTextNumber);
         getDataBtn = findViewById(R.id.getDataBtn);
         imageButtonPrev = findViewById(R.id.imageButtonPrev);
         imageButtonNext = findViewById(R.id.imageButtonNext);
@@ -69,7 +76,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         currentQuestionIndex = 0;
         textViewQuestionCounter1.setText(0 + " out of " + 0);
 
-        questionList = new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
+        int numOfQues = 10;
+        if (editTextNumber.getText() != null && editTextNumber.getText() != "") {
+            Log.d("NumberOF", "getQuestions: " + editTextNumber.getText());
+            numOfQues = Integer.parseInt(editTextNumber.getText().toString());
+        }
+
+        questionList = new QuestionBank().getQuestions(numOfQues, new AnswerListAsyncResponse() {
             @Override
             public void processFinished(ArrayList<Question> questionArrayList) {
 //                Log.d("Questions", "onClick: " + questionArrayList);
@@ -102,9 +115,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.buttonTrue:
                 checkAnswer(true);
+                moveToNextQuestion();
                 break;
             case R.id.buttonFalse:
                 checkAnswer(false);
+                moveToNextQuestion();
                 break;
             case R.id.getDataBtn:
                 getQuestions();
@@ -118,10 +133,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int toastMessageId = 0;
         if (userChoice == isAnswerCorrect) {
             toastMessageId = R.string.correct_answer;
+            fadeView();
         } else {
             toastMessageId = R.string.wrong_answer;
+            shakeAnimation();
         }
 
         Toast.makeText(MainActivity.this, toastMessageId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void fadeView() {
+        CardView cardView = findViewById(R.id.cardView);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
+
+        alphaAnimation.setDuration(350);
+        alphaAnimation.setRepeatCount(1);
+        alphaAnimation.setRepeatMode(Animation.REVERSE);
+        cardView.setAnimation(alphaAnimation);
+
+        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setCardBackgroundColor(Color.GREEN);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cardView.setCardBackgroundColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private void shakeAnimation() {
+        Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake_animation);
+        CardView cardView = findViewById(R.id.cardView);
+        cardView.setAnimation(shake);
+
+        shake.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setCardBackgroundColor(Color.RED);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cardView.setCardBackgroundColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }
