@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Using DB</string>
+    <string name="db_drop">DROP TABLE IF EXISTS</string>
+    <string name="initiate_db_action">Initiate DB Action</string>
+    <string name="button_add_contact">Add Contact</string>
+    <string name="button_get_contacts">Get Contacts</string>
+    <string name="get_contact">Get Contact</string>
+    <string name="update_contact">Update Contact</string>
+    <string name="delete_contact">Delete Contact</string>
+</resources>
