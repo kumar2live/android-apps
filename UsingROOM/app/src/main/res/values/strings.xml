@@ -6,4 +6,6 @@
     <string name="empty">Enter information needed!</string>
     <string name="addContactIcon">addContactIcon</string>
     <string name="contact_name">Contact Name</string>
+    <string name="update_btn">Update</string>
+    <string name="delete_btn">Delete</string>
 </resources>

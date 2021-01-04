@@ -23,6 +23,22 @@ public class ContactRepository {
         return contactsList;
     }
 
+    public LiveData<Contact> getData(int id) {
+        return contactDao.getContact(id);
+    }
+
+    public void update(Contact contact) {
+        ContactRoomDB.databaseWriteExecutor.execute(() -> {
+            contactDao.update(contact);
+        });
+    }
+
+    public void delete(Contact contact) {
+        ContactRoomDB.databaseWriteExecutor.execute(() -> {
+            contactDao.delete(contact);
+        });
+    }
+
     public void insert(Contact contact) {
         ContactRoomDB.databaseWriteExecutor.execute(() -> {
             contactDao.insert(contact);

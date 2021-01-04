@@ -20,10 +20,12 @@ import com.mkdev.usingroom.model.Contact;
 import com.mkdev.usingroom.model.ContactViewModel;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnContactClickListener {
     private static final int NEW_CONTACT_ACTIVITY_REQUEST_CODE = 3;
     private static final String TAG = "MainActivity";
+    public static final String CONTACT_ID = "contact_id";
     private ContactViewModel contactViewModel;
 //    private TextView textView;
     private FloatingActionButton fabAddContact;
@@ -81,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void onContactClick(int position) {
-        Log.d(TAG, "onContactClick: " + position);
+        Contact contact = Objects.requireNonNull(contactViewModel.allContacts.getValue()).get(position);
+        Log.d(TAG, "onContactClick: " + contact.getName());
+
+        Intent intent = new Intent(MainActivity.this, NewContact.class);
+        intent.putExtra(CONTACT_ID, contact.getId());
+        startActivity(intent);
     }
 }

@@ -1,6 +1,7 @@
 package com.mkdev.usingroom;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -21,6 +22,10 @@ public class NewContact extends AppCompatActivity {
     private EditText textContactName;
     private EditText textOccupation;
     private Button buttonAddContact;
+    private Button buttonUpdate;
+    private Button buttonDelete;
+    private int contactId;
+    private Boolean isEdit = false;
 
     private ContactViewModel contactViewModel;
 
@@ -37,6 +42,30 @@ public class NewContact extends AppCompatActivity {
         textContactName = findViewById(R.id.textContactName);
         textOccupation = findViewById(R.id.textOccupation);
         buttonAddContact = findViewById(R.id.buttonAddContact);
+        buttonUpdate = findViewById(R.id.buttonUpdate);
+        buttonDelete = findViewById(R.id.buttonDelete);
+        contactId = 0;
+
+        Bundle data = getIntent().getExtras();
+
+        if(getIntent().hasExtra(MainActivity.CONTACT_ID)) {
+            contactId = getIntent().getIntExtra(MainActivity.CONTACT_ID, 0);
+            contactViewModel.getContact(contactId).observe(this, contact -> {
+                if (contact != null) {
+                    textContactName.setText(contact.getName());
+                    textOccupation.setText(contact.getOccupation());
+                }
+            });
+
+            isEdit = true;
+        }
+
+        if(isEdit) {
+            buttonAddContact.setVisibility(View.GONE);
+        } else {
+            buttonUpdate.setVisibility(View.GONE);
+            buttonDelete.setVisibility(View.GONE);
+        }
 
         buttonAddContact.setOnClickListener(v -> {
             Intent replyIntent = new Intent();
@@ -56,6 +85,34 @@ public class NewContact extends AppCompatActivity {
             } else  {
                 setResult(RESULT_CANCELED, replyIntent);
 //                Toast.makeText(NewContact.this, R.string.empty, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        buttonDelete.setOnClickListener(v -> {
+            contactViewModel.getContact(contactId).observe(this, contact -> {
+                if (contact != null) {
+                    Log.d("buttonDelete", "onCreate: " + "buttonDelete");
+                    contactViewModel.delete(contact);
+                    finish();
+                }
+            });
+        });
+
+        buttonUpdate.setOnClickListener(v -> {
+            String name = textContactName.getText().toString();
+            String occupation = textOccupation.getText().toString();
+
+            if(!TextUtils.isEmpty(textContactName.getText()) && !TextUtils.isEmpty(textOccupation.getText())) {
+                Contact contact = new Contact();
+                contact.setId(contactId);
+                contact.setName(name);
+                contact.setOccupation(occupation);
+                contactViewModel.update(contact);
+
+                finish();
+
+            } else  {
+                Toast.makeText(NewContact.this, R.string.empty, Toast.LENGTH_SHORT).show();
             }
         });
     }

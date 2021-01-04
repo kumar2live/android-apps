@@ -28,4 +28,16 @@ public class ContactViewModel extends AndroidViewModel {
     public void insert(Contact contact) {
         repository.insert(contact);
     }
+
+    public void update(Contact contact) {
+        repository.update(contact);
+    }
+
+    public void delete(Contact contact) {
+        repository.delete(contact);
+    }
+
+    public LiveData<Contact> getContact(int id) {
+        return repository.getData(id);
+    }
 }
